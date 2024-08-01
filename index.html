@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crud</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <form class="form" novalidate>
+        <label form="Nombre">Nombre</label>
+        <input type="text" id = "nombre" autocomplete="off" required>
+        <label form="Apellido">Apellido</label>
+        <input type="text" id = "apellido" autocomplete="off" required>
+        <label form="telefono">Telefono</label>
+        <input type="number" id = "telefono" autocomplete="off" required>
+        <label form="direccion">direccion</label>
+        <input type="text" id = "direccion" autocomplete="off" required>
+        <label form="correo">Correo</label>
+        <input type="text" id = "correo" autocomplete="off" required>
+        <label for="tipo_documento">Tipo de Documento:</label>
+                <select id="tipo_documento" name="tipo"  autocomplete="off">
+                    <!-- <option value="">Seleccione...</option>
+                    <option value="dni">DNI</option>
+                    <option value="pasaporte">Pasaporte</option>
+                    <option value="cédula">Cédula</option>
+                    <option value="T.I">T.I</option> -->
+                </select>
+        <label form="documento">Numero de documento</label>
+        <input type="number" id = "documento" autocomplete="off" required>
+    
+        <div>
+            <input type="checkbox" id="politicas" required>
+            <label for="politicas">Acepta las politicas de uso</label>
+        </div>
+        <button id="button" type="submit" disabled="disabled" >Enviar</button>
+    </form>
+    <script src="app.js" type="module"></script>
+</body>
+</html> 
