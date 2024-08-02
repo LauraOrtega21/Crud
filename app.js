@@ -131,8 +131,6 @@ documento.addEventListener("keydown", (event) => {
     remover(event, documento);
 });
 
-//este es el codigo especifico del boton
-
 //boton enviar hasta que se acepten las politicas
 
 
