@@ -17,6 +17,8 @@ const politicas = document.querySelector("#politicas");
 const correo = document.querySelector("#correo");
 const button = document.querySelector("#button");
 
+
+
 const cantidad = (elemento) => {
     let valor = elemento.value.length === 10;
     if (valor) {

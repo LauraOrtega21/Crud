@@ -1,3 +1,4 @@
+
 const dom = document
 const is_valid =(event, form)=>{
     event.preventDefault();
@@ -11,4 +12,5 @@ const is_valid =(event, form)=>{
     });
     return bandera;
 }
+
 export default is_valid;

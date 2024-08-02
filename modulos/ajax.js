@@ -4,6 +4,5 @@ const solicitud = (url) => {
       .then(json => {
         return json}
     )};
-
         
 export default solicitud

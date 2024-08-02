@@ -1,12 +1,14 @@
 import is_valid from "./modulos/validar.js";
 import letras from "./modulos/letras.js";
 
+
 const $formulario = document.querySelector("form");
 const nombre = document.querySelector("#nombre");
 const boton = document.querySelector("#boton");
 
 
 nombre.addEventListener("keypress", letras);
+
 
 $formulario.addEventListener("submit" , (event)=>{
     let response = is_valid(event, "form [required]")

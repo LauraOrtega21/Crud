@@ -1,4 +1,5 @@
 //quitar el borde rojo al momento que se ingresen los datos y la casilla deje de estar vacia
+
 const remover = (e, input) =>{
     if (input.value != "") {
         input.classList.remove("error");
