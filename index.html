@@ -8,6 +8,7 @@
 </head>
 
 <body>
+    <div class="container layout mt-40 mb-40">
     <form class="form" novalidate>
         <label form="Nombre">Nombre</label>
         <input type="text" id = "nombre" autocomplete="off" required>
@@ -20,7 +21,7 @@
         <label form="correo">Correo</label>
         <input type="text" id = "correo" autocomplete="off" required>
         <label for="tipo_documento">Tipo de Documento:</label>
-                <select id="tipo_documento" name="tipo"  autocomplete="off">
+                <select id="tipo_documento" name="tipo"  autocomplete="off" required>
                     <!-- <option value="">Seleccione...</option>
                     <option value="dni">DNI</option>
                     <option value="pasaporte">Pasaporte</option>
@@ -36,6 +37,36 @@
         </div>
         <button id="button" type="submit" disabled="disabled" >Enviar</button>
     </form>
+    <div class="table">
+        <table>
+            <thead>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Direccion</th>
+                <th>Correo</th>
+                <th>Telefono</th>
+                <th>Tipo Documento</th>
+                <th>N° Documento</th>
+            </thead>
+                <tbody>
+
+                </tbody>
+        </table>
+    </div>
+</div>
+<template id="tb_users">
+    <tr>
+        <td class="nombre"></td>
+        <td class="apellido"></td>
+        <td class="direccion"></td>
+        <td class="correo"></td>
+        <td class="telefono"></td>
+        <td class="tipo_documento"></td>
+        <td class="documento"></td>
+    </tr>
+</template>
+
+
     <script src="app.js" type="module"></script>
 </body>
 </html> 

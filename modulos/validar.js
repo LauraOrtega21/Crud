@@ -5,7 +5,7 @@ const is_valid =(event, form)=>{
     let bandera = true;
     const elemts =document.querySelectorAll(form)
     elemts.forEach(element => {
-        if (element.value == "") {
+        if (element.value === "") {
             element.classList.add("error")
             bandera = false
         }

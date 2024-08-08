@@ -1,9 +1,11 @@
 import solicitud from "./modulos/ajax.js";
+import { URL } from "./modulos/config.js";
 import isCorreo from "./modulos/correo.js";
 import Sololetra from "./modulos/letras.js";
 import numeros from "./modulos/numeros.js";
 import remover from "./modulos/remover.js";
 import is_valid from "./modulos/validar.js";
+
 
 
 const $formulario = document.querySelector("form");
@@ -16,22 +18,33 @@ const documento = document.querySelector("#documento");
 const politicas = document.querySelector("#politicas");
 const correo = document.querySelector("#correo");
 const button = document.querySelector("#button");
+const tb_users = document.querySelector("#tb_users").content;
+const fragmento = document.createDocumentFragment();
+const tbody = document.querySelector("tbody");
 
 
+console.log(tb_users);
 
 const cantidad = (elemento) => {
-    let valor = elemento.value.length === 10;
-    if (valor) {
+    let value = elemento.value.length === 10;
+    if (value) {
         elemento.classList.remove("correcto")
         elemento.classList.add("error")
+    }else{
+        elemento.classList.remove("error")
+        elemento.classList.add("cantidad")
     }
 }
 
 const documentos = () => {
     const fragmento = document.createDocumentFragment()
-    fetch(`http://127.0.0.1:3000/documents`)
+    fetch(`${URL}/documents`)
       .then(response => response.json())
       .then((data)=> {
+        let option = document.createElement("option")
+        option.textContent = "Seleccione ...."
+        option.value = "";
+        fragmento.appendChild(option)
         data.forEach(element => {
         let option = document.createElement("option");
         option.value = element.id;
@@ -42,9 +55,44 @@ const documentos = () => {
       });
 }
 
-const listar = () =>{
-    let data = solicitud("users");
-    console.log(data);;
+const listar = async() =>{
+    const data = await solicitud("users");
+    data.forEach(element =>{
+        tb_users.querySelector(".nombre").textContent = element.first_name;
+        tb_users.querySelector(".apellido").textContent = element.last_name;
+        tb_users.querySelector(".direccion").textContent = element.address;
+        tb_users.querySelector(".correo").textContent = element.email;
+        tb_users.querySelector(".telefono").textContent = element.phone;
+        tb_users.querySelector(".tipo_documento").textContent = element.type_id;
+        tb_users.querySelector(".documento").textContent = element.document;
+
+
+
+        const clone =document.importNode(tb_users, true);
+        fragmento.appendChild(clone);
+    })
+    tbody.appendChild(fragmento);
+
+}
+
+const createRow = (data) =>{
+    const tr = tbody.insertRow(-1);
+
+    const tdnombre = tr.insertCell(0);
+    const tdapellido = tr.insertCell(1);
+    const tddireccion = tr.insertCell(2);
+    const tdcorreo = tr.insertCell(3);
+    const tdtelefono = tr.insertCell(4);
+    const tdtipo_doc = tr.insertCell(5);
+    const tddocumento = tr.insertCell(6);
+
+    tdnombre.textContent = data.first_name;
+    tdapellido.textContent = data.last_name;
+    tddireccion.textContent = data.address;
+    tdcorreo.textContent = data.email;
+    tdtelefono.textContent = data.phone;
+    tdtipo_doc.textContent = data.type_id;
+    tddocumento.textContent = data.document;
 }
 
 //boton enviar hasta que se acepten las politicas
@@ -59,7 +107,7 @@ addEventListener("DOMContentLoaded",(event)=>{
 });
 
 politicas.addEventListener("change", function(e){
-    console.log(e.target.checked);
+    //console.log(e.target.checked);
     if (e.target.checked) {
         button.removeAttribute("disabled")
     }
@@ -69,14 +117,14 @@ $formulario.addEventListener("submit" , (event)=>{
     if (response) {
         const data ={
             first_name: nombre.value,
-            last_name: tipo.value,
+            last_name: apellido.value,
             address: direccion.value,
-            type_id: tipo.value,
+            type_id: tipo_documento.value,
             email: correo.value,
             phone: telefono.value,
             document: documento.value,
         }
-        fetch('http://localhost:3000/users',{
+        fetch(`${URL}/users`,{
             method: "POST",
             body: JSON.stringify(data),
             headers: {
@@ -84,9 +132,21 @@ $formulario.addEventListener("submit" , (event)=>{
             },
         })
         .then((response) => response.json())
-        .then((json) => console.log(json));
+        .then((json) => {
+            nombre.value = "";
+            apellido.value = "";
+            telefono.value = "";
+            direccion.value = "";
+            tipo_documento.selectedIndex = 0;
+            documento.value = "";
+            politicas.value = false;
+            correo.value = "";
+
+            createRow(json)
+
+        });
     }else{
-        alert("campos nulos")
+        alert("Campos Nulos")
     }
 });
 
