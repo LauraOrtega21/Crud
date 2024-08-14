@@ -1,10 +1,12 @@
-import solicitud from "./modulos/ajax.js";
+import solicitud, { enviar } from "./modulos/ajax.js";
 import { URL } from "./modulos/config.js";
 import isCorreo from "./modulos/correo.js";
 import Sololetra from "./modulos/letras.js";
 import numeros from "./modulos/numeros.js";
 import remover from "./modulos/remover.js";
 import is_valid from "./modulos/validar.js";
+import solicitud, { enviar } from "./modulos/ajax.js";
+
 
 
 
@@ -104,6 +106,14 @@ const createRow = (data) =>{
 
 const buscar = (element) =>{
     console.log(element.dataset.id);
+    enviar(`users/${element.dataset.id}`, {
+        method: "PATCH",
+        headers:{
+            'Content-type': 'application/json; charset=UTF-8',
+        }
+    }).then((data)=> {
+        console.log(data);
+    } )
 }
 
 //boton enviar hasta que se acepten las politicaseListener("DOMContentLoadee)=>{
