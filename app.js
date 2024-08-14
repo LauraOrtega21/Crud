@@ -55,18 +55,25 @@ const documentos = () => {
       });
 }
 
-const listar = async() =>{
+const listar = async() => {
     const data = await solicitud("users");
+    const documentos = await solicitud("documents")
+    
     data.forEach(element =>{
+        let nombre = documentos.find((documento) => documento.id === element.type_id).name;
+        
+        console.log(nombre);
+        
         tb_users.querySelector(".nombre").textContent = element.first_name;
         tb_users.querySelector(".apellido").textContent = element.last_name;
         tb_users.querySelector(".direccion").textContent = element.address;
         tb_users.querySelector(".correo").textContent = element.email;
         tb_users.querySelector(".telefono").textContent = element.phone;
-        tb_users.querySelector(".tipo_documento").textContent = element.type_id;
+        tb_users.querySelector(".tipo_documento").textContent = nombre;
         tb_users.querySelector(".documento").textContent = element.document;
 
-
+        tb_users.querySelector(".modificar").setAttribute("data-id",element.id)
+        tb_users.querySelector(".eliminar").setAttribute("data-id",element.id)
 
         const clone =document.importNode(tb_users, true);
         fragmento.appendChild(clone);
@@ -95,14 +102,22 @@ const createRow = (data) =>{
     tddocumento.textContent = data.document;
 }
 
-//boton enviar hasta que se acepten las politicas
-addEventListener("DOMContentLoaded",(event)=>{
+const buscar = (element) =>{
+    console.log(element.dataset.id);
+}
+
+//boton enviar hasta que se acepten las politicaseListener("DOMContentLoadee)=>{
     documentos();
     listar();
     //console.log(politicas.checked);
     if(!politicas.checked){
         // console.log(boton);
         button.setAttribute("disabled", "");
+    };
+
+document.addEventListener("click", (e) =>{
+    if (e.target.matches(".modificar")) {  
+    buscar(e.target)  
     }
 });
 

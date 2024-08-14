@@ -6,7 +6,7 @@
 .container{
     max-width: 1600px;
     margin: 0 auto;
-    background-color: #787676;
+    background-color: #ece6e6;
 }
 
 .mt-40{
@@ -53,7 +53,7 @@ input, select, button{
 }
 
 button{
-    background-color: #000000;
+    background-color: #403e3e;
     color: #cecece;
     cursor: pointer;
     font-size: 16px;
