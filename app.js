@@ -5,8 +5,6 @@ import Sololetra from "./modulos/letras.js";
 import numeros from "./modulos/numeros.js";
 import remover from "./modulos/remover.js";
 import is_valid from "./modulos/validar.js";
-import solicitud, { enviar } from "./modulos/ajax.js";
-
 
 
 
@@ -23,6 +21,7 @@ const button = document.querySelector("#button");
 const tb_users = document.querySelector("#tb_users").content;
 const fragmento = document.createDocumentFragment();
 const tbody = document.querySelector("tbody");
+const user = document.querySelector("#user");
 
 
 console.log(tb_users);
@@ -104,16 +103,105 @@ const createRow = (data) =>{
     tddocumento.textContent = data.document;
 }
 
-const buscar = (element) =>{
-    console.log(element.dataset.id);
-    enviar(`users/${element.dataset.id}`, {
+const buscar = async(element) =>{
+   const data = await enviar(`users/${element.dataset.id}`, {
         method: "PATCH",
         headers:{
             'Content-type': 'application/json; charset=UTF-8',
         }
-    }).then((data)=> {
-        console.log(data);
-    } )
+    });
+    loadForm(data)
+}
+
+const save = (event) =>  {
+    let response = is_valid(event, "form [required]");
+    const data ={
+        first_name: nombre.value,
+        last_name: apellido.value,
+        address: direccion.value,
+        type_id: tipo_documento.value,
+        email: correo.value,
+        phone: telefono.value,
+        document: documento.value,
+        }
+        if (response) {
+            if(user.value === ""){
+                guardar(data)
+            }else{
+                actualizar(data)
+            }
+            
+        }
+}
+
+const guardar = (data) => {
+    console.log(data);
+    return
+    fetch(`${URL}/users`,{
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+        })
+        .then((response) => response.json())
+        .then((json) => {
+            nombre.value = "";
+            apellido.value = "";
+            telefono.value = "";
+            direccion.value = "";
+            tipo_documento.selectedIndex = 0;
+            documento.value = "";
+            politicas.value = false;
+            correo.value = "";
+
+
+            limpiarForm()
+
+            createRow(json)
+
+        });
+    }
+    
+
+
+const actualizar = async (data) => {
+    const response = await enviar(`users/${user.value}`,{
+        method: 'PUT',
+        body: JSON.stringify(data),
+        headers: {
+    'Content-type': 'application/json; charset=UTF-8',
+    }
+    })
+}
+
+const limpiarForm = () => {
+    nombre.value = "";
+}
+
+
+const loadForm = (data) => {
+    const {
+        id,
+        first_name,
+        last_name,
+        phone,
+        address,
+        email,
+        type_id,
+        document,
+    } =  data;
+
+    user.value = id;
+    nombre.value = data.first_name;
+    apellido.value = data.last_name;
+    telefono.value = data.phone;
+    direccion.value = data.address;
+    correo.value = data.email;
+    tipo_documento.value = data.type_id;
+    documento.value = data.document;
+    politicas.checked = true;
+    button.removeAttribute("disabled", "")
 }
 
 //boton enviar hasta que se acepten las politicaseListener("DOMContentLoadee)=>{
@@ -137,43 +225,7 @@ politicas.addEventListener("change", function(e){
         button.removeAttribute("disabled")
     }
 });
-$formulario.addEventListener("submit" , (event)=>{
-    let response = is_valid(event, "form [required]");
-    if (response) {
-        const data ={
-            first_name: nombre.value,
-            last_name: apellido.value,
-            address: direccion.value,
-            type_id: tipo_documento.value,
-            email: correo.value,
-            phone: telefono.value,
-            document: documento.value,
-        }
-        fetch(`${URL}/users`,{
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            },
-        })
-        .then((response) => response.json())
-        .then((json) => {
-            nombre.value = "";
-            apellido.value = "";
-            telefono.value = "";
-            direccion.value = "";
-            tipo_documento.selectedIndex = 0;
-            documento.value = "";
-            politicas.value = false;
-            correo.value = "";
-
-            createRow(json)
-
-        });
-    }else{
-        alert("Campos Nulos")
-    }
-});
+$formulario.addEventListener("submit" , save);
 
 nombre.addEventListener("blur", (event) => {
     remover(event, nombre);
