@@ -63,7 +63,8 @@ const listar = async() => {
     data.forEach(element =>{
         let nombre = documentos.find((documento) => documento.id === element.type_id).name;
         
-        console.log(nombre);
+        // tb_users.querySelector("tr").setAttribute("id", `user_${element.id}`)
+        tb_users.querySelector("tr").id = `user_${element.id}`;
         
         tb_users.querySelector(".nombre").textContent = element.first_name;
         tb_users.querySelector(".apellido").textContent = element.last_name;
@@ -104,7 +105,8 @@ const createRow = (data) =>{
 }
 
 const buscar = async(element) =>{
-   const data = await enviar(`users/${element.dataset.id}`, {
+   const data = await enviar(`users/${element.dataset.id}`, //endpoint
+    {
         method: "PATCH",
         headers:{
             'Content-type': 'application/json; charset=UTF-8',
@@ -129,16 +131,26 @@ const save = (event) =>  {
                 guardar(data)
             }else{
                 actualizar(data)
+                console.log(document);
+                
             }
             
         }
 }
 
-const guardar = (data) => {
-    console.log(data);
-    return
+const eliminar = (data) => {
     fetch(`${URL}/users`,{
-            method: "POST",
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+        }})}
+
+
+
+const guardar = (data) => {
+    fetch(`${URL}/users`,{
+            method: "Delete",
             body: JSON.stringify(data),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
@@ -161,7 +173,7 @@ const guardar = (data) => {
             createRow(json)
 
         });
-    }
+}
     
 
 
@@ -172,13 +184,38 @@ const actualizar = async (data) => {
         headers: {
     'Content-type': 'application/json; charset=UTF-8',
     }
-    })
+    });
+    limpiarForm()
+    ediRow(response)
+    
 }
 
 const limpiarForm = () => {
     nombre.value = "";
+    apellido.value = "";
+    telefono.value = "";
+    direccion.value = "";
+    correo.value = "";
+    tipo_documento.value = "";
+    documento.value = "";
+    politicas.checked = false;
+    button.removeAttribute ("disabled")
 }
 
+const ediRow = async (data) => {
+    const documentos = await solicitud("documents")
+    let nombre = documentos.find((documento)=> documento.id === data.type_id). name
+    const tr = document.querySelector(`#user_${data.id}`)
+    // nombre = tr.querySelector(".nombre");
+   tr.querySelector(".nombre").textContent = data.first_name;
+   tr.querySelector(".apellido").textContent = data.last_name;
+   tr.querySelector(".direccion").textContent = data.address;
+   tr.querySelector(".tipo_documento").textContent = nombre;
+   tr.querySelector(".correo").textContent = data.email;
+   tr.querySelector(".telefono").textContent = data.phone;
+   tr.querySelector(".documento").textContent = data.document;
+   
+};
 
 const loadForm = (data) => {
     const {
@@ -203,6 +240,7 @@ const loadForm = (data) => {
     politicas.checked = true;
     button.removeAttribute("disabled", "")
 }
+
 
 //boton enviar hasta que se acepten las politicaseListener("DOMContentLoadee)=>{
     documentos();
