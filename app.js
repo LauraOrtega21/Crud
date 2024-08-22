@@ -56,11 +56,37 @@ const documentos = () => {
       });
 }
 
-const listar = async() => {
-    const data = await solicitud("users");
+const listar = async(page) => {
+    const _page = page ? page : 1;
+    const data = await solicitud(`users?_page=${_page}&_per_page=8`);
     const documentos = await solicitud("documents")
     
-    data.forEach(element =>{
+    const nav = document.querySelector(".navegacion");
+    const first = data.first;
+    const prev = data.prev;
+    const next = data.next;
+    const last = data.last;
+
+    nav.querySelector(".first").disabled = first ? false : true;
+    nav.querySelector(".prev").disabled = prev ? false : true;
+    nav.querySelector(".next").disabled = next ? false : true;
+    nav.querySelector(".last").disabled = last ? false : true;
+
+    nav.querySelector(".first").setAttribute("data-first", first);
+    nav.querySelector(".prev").setAttribute("data-prev", prev);
+    nav.querySelector(".next").setAttribute("data-next", next);
+    nav.querySelector(".last").setAttribute("data-last", last)
+    
+
+console.log(data);
+
+console.log(nav);
+
+
+    
+    
+
+    data.data.forEach(element =>{
         let nombre = documentos.find((documento) => documento.id === element.type_id).name;
         
         // tb_users.querySelector("tr").setAttribute("id", `user_${element.id}`)
@@ -138,19 +164,13 @@ const save = (event) =>  {
         }
 }
 
-const eliminar = (data) => {
-    fetch(`${URL}/users`,{
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-            'Content-type': 'application/json; charset=UTF-8',
-        }})}
+
 
 
 
 const guardar = (data) => {
     fetch(`${URL}/users`,{
-            method: "Delete",
+            method: "Post",
             body: JSON.stringify(data),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
@@ -241,8 +261,31 @@ const loadForm = (data) => {
     button.removeAttribute("disabled", "")
 }
 
+const eliminar = async (element) => {
+    let id = element.dataset.id;
+    const tr = document-querySelector(`#users_${id}`);
+    const username = tr.querySelector(".nombre").textContent;
+    const confirmdelete = confirm(`Desea eliminar al usuario ${username} ?`);
+
+    if (confirmdelete) {
+        const response = await enviar(`${URL}/users/${id}`, {
+        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+        },
+    });
+    }
+    tr.remove()
+    
+    
+}
 
 //boton enviar hasta que se acepten las politicaseListener("DOMContentLoadee)=>{
+    
+
+
+ 
+addEventListener("DOMContentLoaded", (event) => {
     documentos();
     listar();
     //console.log(politicas.checked);
@@ -250,12 +293,63 @@ const loadForm = (data) => {
         // console.log(boton);
         button.setAttribute("disabled", "");
     };
+})   
 
 document.addEventListener("click", (e) =>{
     if (e.target.matches(".modificar")) {  
     buscar(e.target)  
     }
-});
+
+    if (e.target.matches(".eliminar")) {
+    eliminar(e.target)
+    }
+
+    if (e.target.matches(".first")) {
+        const nodos = tbody;
+        const first = e.target.dataset.first
+        console.log(first);
+        
+        while(nodos.firstChild){
+            nodos.removeChild(nodos.firstChild)
+        }
+        listar(first)
+    }
+
+    if (e.target.matches(".prev")) {
+        const nodos = tbody;
+        const prev = e.target.dataset.prev
+        console.log(prev);
+        
+        while(nodos.firstChild){
+            nodos.removeChild(nodos.firstChild)
+        }
+        listar(prev)
+    }
+
+    if (e.target.matches(".next")) {
+        const nodos = tbody;
+        const next = e.target.dataset.next
+        console.log(next);
+        
+        while(nodos.firstChild){
+            nodos.removeChild(nodos.firstChild)
+        }
+        listar(next)
+    }
+
+    if (e.target.matches(".last")) {
+        const nodos = tbody;
+        const last = e.target.dataset.last
+        console.log(last);
+        
+
+        while(nodos.firstChild){
+            nodos.removeChild(nodos.firstChild)
+        }
+        listar(last)
+    }
+}
+);
 
 politicas.addEventListener("change", function(e){
     //console.log(e.target.checked);
